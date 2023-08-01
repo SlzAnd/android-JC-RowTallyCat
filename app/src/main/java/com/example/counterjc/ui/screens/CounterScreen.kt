@@ -174,38 +174,40 @@ fun CounterScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_goal),
-                    contentDescription = "Set the goal",
-                    tint = PurpleGrey,
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .weight(1f)
-                        .size(50.dp)
-                        .clickable { goalDialogState.show() }
-                )
+                if (snackBarHostState.currentSnackbarData == null) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_goal),
+                        contentDescription = "Set the goal",
+                        tint = PurpleGrey,
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .weight(1f)
+                            .size(50.dp)
+                            .clickable { goalDialogState.show() }
+                    )
 
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_minus),
-                    contentDescription = "Minus one row",
-                    tint = PurpleGrey,
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .weight(1f)
-                        .size(50.dp)
-                        .clickable { onAction(CounterAction.Decrease) }
-                )
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_minus),
+                        contentDescription = "Minus one row",
+                        tint = PurpleGrey,
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .weight(1f)
+                            .size(50.dp)
+                            .clickable { onAction(CounterAction.Decrease) }
+                    )
 
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_rabbit),
-                    contentDescription = "Clear the counter",
-                    tint = PurpleGrey,
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .weight(1f)
-                        .size(50.dp)
-                        .clickable { onAction(CounterAction.ClearCounter) }
-                )
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_rabbit),
+                        contentDescription = "Clear the counter",
+                        tint = PurpleGrey,
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .weight(1f)
+                            .size(50.dp)
+                            .clickable { onAction(CounterAction.ClearCounter) }
+                    )
+                }
             }
             GoalDialog(
                 goalDialogState = goalDialogState,
