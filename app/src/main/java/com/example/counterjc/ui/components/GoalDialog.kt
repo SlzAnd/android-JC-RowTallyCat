@@ -3,19 +3,11 @@ package com.example.counterjc.ui.components
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
@@ -35,18 +27,18 @@ import kotlinx.coroutines.launch
 @SuppressLint("SuspiciousIndentation")
 @Composable
 fun GoalDialog(
-    goalDialogState: MaterialDialogState,
+    title: String,
+    message: String,
+    dialogState: MaterialDialogState,
     counterState: CounterState,
-    onAction: (CounterAction) -> Unit
+    onAction: (CounterAction) -> Unit,
+    snackBarHostState: SnackbarHostState
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val snackBarHostState = remember {
-        SnackbarHostState()
-    }
 
     Box {
         MaterialDialog (
-            dialogState = goalDialogState,
+            dialogState = dialogState,
             buttons = {
                 positiveButton(
                     "OK",
@@ -83,7 +75,7 @@ fun GoalDialog(
             )
         ){
             title(
-                text = "Встановити ціль?",
+                text = title,
                 style = TextStyle(
                     textAlign = TextAlign.Center,
                     color = Color.Black,
@@ -92,8 +84,7 @@ fun GoalDialog(
                 center = true
             )
             message(
-                text = "Тут можна вказати яку кількість рядків тобі необхідно зробити і ми " +
-                        "повідомимо коли вона буде досягнута",
+                text = message,
                 style = TextStyle(
                     textAlign = TextAlign.Center,
                     color = Color.DarkGray,
@@ -122,36 +113,5 @@ fun GoalDialog(
                 }
             }
         }
-
-        SnackbarHost(
-            hostState = snackBarHostState,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxSize()
-            ,
-            snackbar = {
-                val rowsString = when (counterState.goal) {
-                    1 -> "рядок"
-                    in 2..4 -> "рядки"
-                    else -> "рядків"
-                }
-
-                var title = "Встановлено ціль!"
-                var message = "Ваша нова ціль ${counterState.goal} $rowsString!"
-                var icon = Icons.Default.CheckCircle
-
-                if (counterState.goal == 0) {
-                    title = "Ціль відсутня!"
-                    message = "Ціль було успішно анульовано!"
-                    icon = Icons.Default.Clear
-                }
-
-                CustomSnackBar(
-                    title = title,
-                    message = message,
-                    icon = icon
-                )
-            }
-        )
     }
 }

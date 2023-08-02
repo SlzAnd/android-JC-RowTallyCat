@@ -15,15 +15,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ThumbUp
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Icon
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -40,14 +40,12 @@ import androidx.constraintlayout.compose.ConstraintSet
 import com.example.counterjc.logic.CounterAction
 import com.example.counterjc.logic.CounterState
 import com.example.counterjc.R
-import com.example.counterjc.ui.components.BottomNavigation
 import com.example.counterjc.ui.components.CustomSnackBar
 import com.example.counterjc.ui.components.GoalDialog
 import com.example.counterjc.ui.theme.PurpleGrey
 import com.example.counterjc.ui.theme.achievedGoalColor
 import com.example.counterjc.ui.theme.backgroundPanelColor
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
-import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -56,7 +54,7 @@ fun CounterScreen(
     onAction: (CounterAction) -> Unit
 ) {
     val goalDialogState = rememberMaterialDialogState()
-    val coroutineScope = rememberCoroutineScope()
+    val achievedGoalDialogState = rememberMaterialDialogState()
     val snackBarHostState = remember {
         SnackbarHostState()
     }
@@ -87,27 +85,32 @@ fun CounterScreen(
     Scaffold(
         snackbarHost = {
             SnackbarHost(
-                hostState = snackBarHostState
-            ) {
-                CustomSnackBar(
-                    title = "Гарна робота!",
-                    message = "Ви досягли цілі по рядкам, тепер можете задати нову!",
-                    icon = Icons.Default.ThumbUp,
-                ) {
-                    BottomNavigation(
-                        leftButtonText = "Обнулити",
-                        rightButtonText = "Нова ціль",
-                        leftButtonAction = {
-                            onAction(CounterAction.ClearGoal)
-                            it.dismiss()
-                        },
-                        rightButtonAction = {
-                            goalDialogState.show()
-                            it.dismiss()
-                        }
+                hostState = snackBarHostState,
+                modifier = Modifier,
+                snackbar = {
+                    val rowsString = when (state.goal) {
+                        1 -> "рядок"
+                        in 2..4 -> "рядки"
+                        else -> "рядків"
+                    }
+
+                    var title = "Встановлено ціль!"
+                    var message = "Ваша нова ціль ${state.goal} $rowsString!"
+                    var icon = Icons.Default.CheckCircle
+
+                    if (state.goal == 0) {
+                        title = "Ціль відсутня!"
+                        message = "Ціль було успішно анульовано!"
+                        icon = Icons.Default.Clear
+                    }
+
+                    CustomSnackBar(
+                        title = title,
+                        message = message,
+                        icon = icon
                     )
                 }
-            }
+            )
         }
     ) {
         ConstraintLayout(
@@ -127,14 +130,7 @@ fun CounterScreen(
                             (state.counter == state.goal - 1 && state.goal != 0) ||
                             (state.counter == state.goal && state.goal != 0)
                         ) {
-                            coroutineScope.launch {
-                                snackBarHostState
-                                    .showSnackbar(
-                                        "",
-                                        duration = SnackbarDuration.Indefinite,
-                                        withDismissAction = true
-                                    )
-                            }
+                           achievedGoalDialogState.show()
                         }
                     },
             ) {
@@ -147,10 +143,7 @@ fun CounterScreen(
                         .align(Alignment.Center),
                     contentScale = ContentScale.Crop
                 )
-
-
             }
-
             Text(
                 text = state.counter.toString(),
                 color = if (state.counter != state.goal || state.goal == 0) {
@@ -164,7 +157,6 @@ fun CounterScreen(
                 modifier = Modifier
                     .layoutId("counter_text")
             )
-
             Column (
                 modifier = Modifier
                     .height(270.dp)
@@ -174,50 +166,58 @@ fun CounterScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if (snackBarHostState.currentSnackbarData == null) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_goal),
-                        contentDescription = "Set the goal",
-                        tint = PurpleGrey,
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .weight(1f)
-                            .size(50.dp)
-                            .clickable { goalDialogState.show() }
-                    )
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_goal),
+                    contentDescription = "Set the goal",
+                    tint = PurpleGrey,
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .weight(1f)
+                        .size(50.dp)
+                        .clickable { goalDialogState.show() }
+                )
 
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_minus),
-                        contentDescription = "Minus one row",
-                        tint = PurpleGrey,
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .weight(1f)
-                            .size(50.dp)
-                            .clickable { onAction(CounterAction.Decrease) }
-                    )
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_minus),
+                    contentDescription = "Minus one row",
+                    tint = PurpleGrey,
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .weight(1f)
+                        .size(50.dp)
+                        .clickable { onAction(CounterAction.Decrease) }
+                )
 
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_rabbit),
-                        contentDescription = "Clear the counter",
-                        tint = PurpleGrey,
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .weight(1f)
-                            .size(50.dp)
-                            .clickable { onAction(CounterAction.ClearCounter) }
-                    )
-                }
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_rabbit),
+                    contentDescription = "Clear the counter",
+                    tint = PurpleGrey,
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .weight(1f)
+                        .size(50.dp)
+                        .clickable { onAction(CounterAction.ClearCounter) }
+                )
             }
+
+            // Dialog window for setting the goal of rows
             GoalDialog(
-                goalDialogState = goalDialogState,
+                title = stringResource(id = R.string.goal_dialog_title),
+                message = stringResource(id = R.string.goal_dialog_message),
+                dialogState = goalDialogState,
                 counterState = state,
-                onAction = onAction
+                onAction = onAction,
+                snackBarHostState = snackBarHostState
             )
+
+            // Dialog window which appears when user achieved the goal of rows
+            GoalDialog(
+                title = stringResource(id = R.string.achieved_goal_dialog_title),
+                message = stringResource(id = R.string.achieved_goal_dialog_message),
+                dialogState = achievedGoalDialogState,
+                counterState = state,
+                onAction = onAction,
+                snackBarHostState = snackBarHostState)
         }
-
     }
-
-
-
 }
