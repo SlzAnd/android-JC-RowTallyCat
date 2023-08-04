@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.counterjc.logic.CounterViewModel
 import com.example.counterjc.ui.screens.CounterScreen
+import com.example.counterjc.ui.screens.HomeScreen
 import com.example.counterjc.ui.theme.CounterJCTheme
 
 class MainActivity : ComponentActivity() {
@@ -16,10 +17,11 @@ class MainActivity : ComponentActivity() {
                 val viewModel = viewModel<CounterViewModel>()
                 val counterState = viewModel.counterState
 
-                CounterScreen(
-                    state = counterState,
-                    onAction = viewModel::onAction,
-                )
+//                CounterScreen(
+//                    state = counterState,
+//                    onAction = viewModel::onAction,
+//                )
+                HomeScreen()
             }
         }
     }
