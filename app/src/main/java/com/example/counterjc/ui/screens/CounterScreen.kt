@@ -13,14 +13,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material3.Icon
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -31,27 +36,34 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
+import androidx.navigation.NavHostController
 import com.example.counterjc.logic.CounterAction
 import com.example.counterjc.logic.CounterState
 import com.example.counterjc.R
 import com.example.counterjc.ui.components.CustomSnackBar
+import com.example.counterjc.ui.components.CustomTopAppBar
 import com.example.counterjc.ui.components.GoalDialog
+import com.example.counterjc.ui.theme.Purple80
 import com.example.counterjc.ui.theme.PurpleGrey
 import com.example.counterjc.ui.theme.achievedGoalColor
 import com.example.counterjc.ui.theme.backgroundPanelColor
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun CounterScreen(
     state: CounterState,
-    onAction: (CounterAction) -> Unit
+    onAction: (CounterAction) -> Unit,
+    navController: NavHostController
 ) {
     val goalDialogState = rememberMaterialDialogState()
     val achievedGoalDialogState = rememberMaterialDialogState()
@@ -77,12 +89,19 @@ fun CounterScreen(
        }
 
        constrain(counterText) {
-           top.linkTo(parent.top, margin = 10.dp)
+           top.linkTo(parent.top)
            start.linkTo(parent.start)
            end.linkTo(parent.end)
        }
    }
     Scaffold(
+        topBar = {
+                 CustomTopAppBar(
+                     icon = Icons.Filled.ArrowBack,
+                     iconDescription = "Back to the home screen",
+                     title = "product_name",
+                     onIconClick = {navController.popBackStack()})
+        },
         snackbarHost = {
             SnackbarHost(
                 hostState = snackBarHostState,
@@ -130,7 +149,7 @@ fun CounterScreen(
                             (state.counter == state.goal - 1 && state.goal != 0) ||
                             (state.counter == state.goal && state.goal != 0)
                         ) {
-                           achievedGoalDialogState.show()
+                            achievedGoalDialogState.show()
                         }
                     },
             ) {

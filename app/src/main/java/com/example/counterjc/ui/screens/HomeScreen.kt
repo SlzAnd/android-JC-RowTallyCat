@@ -1,18 +1,14 @@
 package com.example.counterjc.ui.screens
 
 import android.annotation.SuppressLint
-import android.media.Image
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,8 +17,6 @@ import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -39,7 +33,6 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.rememberScaffoldState
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -48,7 +41,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -56,8 +48,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.example.counterjc.R
+import com.example.counterjc.logic.CounterViewModel
 import com.example.counterjc.logic.MenuItem
+import com.example.counterjc.logic.Screen
+import com.example.counterjc.ui.components.CustomTopAppBar
 import com.example.counterjc.ui.components.DrawerBody
 import com.example.counterjc.ui.components.DrawerHeader
 import com.example.counterjc.ui.theme.Pink40
@@ -67,40 +64,26 @@ import com.example.counterjc.ui.theme.achievedGoalColor
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    navController: NavHostController
+) {
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
     Scaffold(
         scaffoldState = scaffoldState,
-        topBar = { CenterAlignedTopAppBar(
-            navigationIcon = {
-                IconButton(onClick = {
-                    scope.launch {
-                        scaffoldState.drawerState.open()
-                    }
-                }) {
-                    Icon(
-                        imageVector = Icons.Filled.Menu,
-                        contentDescription = ""
-                    )
+        topBar = {
+            CustomTopAppBar(
+                icon = Icons.Filled.Menu,
+                iconDescription = "Navigation menu",
+                title = "Row Tally Cat"
+            ) {
+                scope.launch {
+                    scaffoldState.drawerState.open()
                 }
-            },
-            title = {
-                Text(
-                    text = "Row Tally Cat",
-                    style = TextStyle(
-                        fontSize = 26.sp,
-                        fontFamily = FontFamily.Cursive
-                    )
-                )
-            },
-            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                containerColor = Purple80
-            )
-
-        ) },
+            }
+        },
         drawerContent = {
                         DrawerHeader()
                         DrawerBody(
@@ -155,7 +138,9 @@ fun HomeScreen() {
                     goalValue = 15,
                     modifier = Modifier
                         .clickable {
-
+                            navController.navigate(
+                                route = Screen.Counter.route
+                            )
                         },
                 )
             }
@@ -175,6 +160,7 @@ fun ProductItem(
     Box (
         modifier = modifier
             .fillMaxWidth()
+            .height(100.dp)
             .border(
                 width = 1.dp,
                 color = Color.LightGray,
@@ -183,7 +169,9 @@ fun ProductItem(
             .padding(3.dp)
     ) {
         Row(
-            modifier = modifier.fillMaxWidth(),
+            modifier = modifier
+                .fillMaxWidth()
+                .align(Alignment.Center),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -198,7 +186,7 @@ fun ProductItem(
             Text(
                 text = productName,
                 style = TextStyle(
-                    fontSize = 13.sp,
+                    fontSize = 14.sp,
                     fontWeight = FontWeight.Medium,
                 ),
                 maxLines = 2,
