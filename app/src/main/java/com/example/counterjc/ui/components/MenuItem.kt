@@ -1,4 +1,4 @@
-package com.example.counterjc.logic
+package com.example.counterjc.ui.components
 
 import androidx.compose.ui.graphics.vector.ImageVector
 

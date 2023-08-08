@@ -57,7 +57,6 @@ import com.example.counterjc.ui.theme.achievedGoalColor
 import com.example.counterjc.ui.theme.backgroundPanelColor
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 
-@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun CounterScreen(
@@ -89,11 +88,12 @@ fun CounterScreen(
        }
 
        constrain(counterText) {
-           top.linkTo(parent.top)
+           top.linkTo(parent.top, margin = (-30).dp)
            start.linkTo(parent.start)
            end.linkTo(parent.end)
        }
    }
+
     Scaffold(
         topBar = {
                  CustomTopAppBar(
