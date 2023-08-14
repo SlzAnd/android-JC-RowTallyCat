@@ -2,7 +2,6 @@ package com.example.counterjc.di
 
 import android.app.Application
 import androidx.room.Room
-import com.example.counterjc.feature_counter.data.data_source.ProductDAO
 import com.example.counterjc.feature_counter.data.data_source.ProductDatabase
 import com.example.counterjc.feature_counter.data.repository.ProductRepositoryImpl
 import com.example.counterjc.feature_counter.domain.repository.ProductRepository

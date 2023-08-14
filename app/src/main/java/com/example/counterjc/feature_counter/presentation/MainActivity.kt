@@ -3,6 +3,7 @@ package com.example.counterjc.feature_counter.presentation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.counterjc.feature_counter.presentation.navigation.SetupNavGraph
@@ -21,7 +22,8 @@ class MainActivity : ComponentActivity() {
                 navController = rememberNavController()
 
                 SetupNavGraph(
-                    navController = navController
+                    navController = navController,
+                    context = LocalContext.current
                 )
             }
         }

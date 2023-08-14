@@ -105,9 +105,8 @@ dependencies {
     implementation "androidx.compose.material:material-icons-extended:1.5.0"
     implementation "androidx.hilt:hilt-navigation-compose:1.1.0-alpha01"
 
-    // compose constraint layout
+    // Compose Constraint layout
     implementation "androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha11"
-
 
     // Coroutines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3'
@@ -127,7 +126,11 @@ dependencies {
     // Coil
     implementation("io.coil-kt:coil-compose:2.4.0")
 
+    // Preferences DataStore
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    // Color picker
+    implementation("com.github.skydoves:colorpicker-compose:1.0.4")
 
 }
 

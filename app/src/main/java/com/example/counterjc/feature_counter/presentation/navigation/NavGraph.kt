@@ -1,6 +1,7 @@
 package com.example.counterjc.feature_counter.presentation.navigation
 
 import android.annotation.SuppressLint
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -10,12 +11,14 @@ import androidx.navigation.navArgument
 import com.example.counterjc.feature_counter.presentation.counter.CounterScreen
 import com.example.counterjc.feature_counter.presentation.help.HelpScreen
 import com.example.counterjc.feature_counter.presentation.products.ProductsScreen
+import com.example.counterjc.feature_counter.presentation.settings.SettingsScreen
 
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun SetupNavGraph(
-    navController: NavHostController
+    navController: NavHostController,
+    context: Context
 ) {
 
     NavHost(
@@ -48,6 +51,15 @@ fun SetupNavGraph(
         ) {
             HelpScreen(
                 navController = navController
+            )
+        }
+
+        composable(
+            route = Screen.Settings.route
+        ) {
+            SettingsScreen(
+                navController = navController,
+                context = context
             )
         }
     }

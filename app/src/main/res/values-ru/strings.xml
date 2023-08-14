@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="settings_page_title">Налаштування</string>
+
     <string name="goal_dialog_title">Встановити ціль?</string>
     <string name="goal_dialog_message">Тут можна вказати яку кількість рядків
         тобі необхідно зробити та ми повідомимо коли вона буде досягнута</string>

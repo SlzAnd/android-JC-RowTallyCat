@@ -34,12 +34,26 @@ val Typography = Typography(
         lineHeight = 20.sp,
         letterSpacing = 0.5.sp
     ),
+    bodySmall = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 12.sp,
+        lineHeight = 17.sp,
+        letterSpacing = 0.5.sp
+    ),
     titleLarge = TextStyle(
         fontFamily = pacificoFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 26.sp,
         lineHeight = 31.sp,
         letterSpacing = 0.sp
+    ),
+    titleMedium = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 24.sp,
+        lineHeight = 28.sp,
+        letterSpacing = 0.5.sp
     ),
     titleSmall = TextStyle(
         fontFamily = pacificoFamily,

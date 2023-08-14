@@ -74,7 +74,11 @@ fun NavigationDrawer(
                 Text(text = stringResource(id = R.string.drawer_menu_item_settings))
             },
             selected = false,
-            onClick = { /*TODO*/ },
+            onClick = {
+                navController.navigate(
+                    route = Screen.Settings.route
+                )
+            },
             modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
         )
         NavigationDrawerItem(

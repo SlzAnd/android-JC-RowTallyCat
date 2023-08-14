@@ -1,6 +1,13 @@
 <resources>
     <string name="app_name" translatable="false">Row Tally Cat</string>
 
+    <string name="settings_page_title">Settings</string>
+    <string name="settings_display_title">Display settings</string>
+    <string name="settings_display_description">
+        Change display settings (Brightness, Dark/Light theme etc.)
+    </string>
+    <string name="settings_counter_screen_setup_title">Setup counter screen</string>
+
     <string name="goal_dialog_title">Set a goal?</string>
     <string name="goal_dialog_message">Here you can specify the number of rows
          you need to do and we will let you know when it is achieved</string>
