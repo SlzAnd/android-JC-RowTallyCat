@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="goal_dialog_title">Встановити ціль?</string>
+    <string name="goal_dialog_message">Тут можна вказати яку кількість рядків
+        тобі необхідно зробити та ми повідомимо коли вона буде досягнута</string>
+    <string name="goal_dialog_positive_button_text">ОК</string>
+    <string name="goal_dialog_cancel_button_text">Вийти</string>
+    <string name="goal_dialog_reset_button_text">Прибрати</string>
+    <string name="goal_dialog_textfield_label">Кількість рядків</string>
+
+
+    <string name="achieved_goal_dialog_title">Ціль досягнуто!</string>
+    <string name="achieved_goal_dialog_message">Гарна робота! Вказана раніше ціль була досягнута,
+        можете задати нову або прибрати її</string>
+
+    <string name="goal_set_snackbar_title">Ціль встановлено!</string>
+    <string name="goal_set_snackbar_message">Твоя нова ціль</string>
+    <string name="goal_set_snackbar_one_row">рядок</string>
+    <string name="goal_set_snackbar_2_4_row">рядки</string>
+    <string name="goal_set_snackbar_more_rows">рядків</string>
+
+    <string name="goal_clean_snackbar_title">Ціль відсутня!</string>
+    <string name="goal_clean_snackbar_message">Ціль була успішно анульована!</string>
+
+    <string name="drawer_menu_item_home">Додому</string>
+    <string name="drawer_menu_item_settings">Налаштування</string>
+    <string name="drawer_menu_item_help">Допомога</string>
+
+    <string name="sorting_area_title">Сортувати по:</string>
+    <string name="sorting_area_item_by_name">Імені</string>
+    <string name="sorting_area_item_by_modification_time">Часу внесення змін</string>
+
+    <string name="add_product_dialog_title">Додати новий виріб</string>
+    <string name="add_product_dialog_description">Ви можете залишити поле \"Ціль\"
+        порожнім і додати його пізніше за потреби</string>
+    <string name="add_product_dialog_productName_hint">Назва виробу*</string>
+    <string name="add_product_dialog_productGoal_hint">Ціль</string>
+    <string name="add_product_dialog_save_button">Зберегти</string>
+    <string name="add_product_dialog_empty_name_message">
+        Назва продукту не може бути порожньою</string>
+    <string name="suporting_text_required_field">*обов\`язкове поле</string>
+
+    <string name="deleted_product_snackbar_message_first_part">Виріб: </string>
+    <string name="deleted_product_snackbar_message_second_part"> було видалено</string>
+    <string name="deleted_product_snackbar_action">Скасувати</string>
+
+    <string name="help_screen_title">Про застосунок</string>
+    <string name="help_screen_text">
+        \"Row Tally Cat\" - це зручний інструмент для тих, хто займається вʼязанням.
+        Він допомагає вам вести облік кількості вʼязаних рядків для кожного вашого виробу.
+        Під час запуску програми, вас вітає перший екран, де внизу ви можете бачити кнопку
+        додавання нового виробу.
+    </string>
+    <string name="help_screen_add_product_button_description">
+        Ця кнопка відкриває діалогове вікно де ви можете з легкістю
+        створити свій новий виріб.
+    </string>
+    <string name="help_screen_text_2">
+        При його створенні вам потрібно вказати обов\'язковий пункт - назву виробу.
+        Крім того, за бажанням, ви можете вказати ціль - кількість рядків, яку вам потрібно зробити.
+        Якщо залишити поле цілі порожнім створиться виріб без неї, але пізніше у вас буде
+        можливість додати або прибрати її. Натискаючи кнопку створити, ви повертаєтесь на основний
+        екран.
+        Усі ваші вироби зображуються у вигляді списку на домашньому екрані.
+        При натисканні на будь-який виріб ви переходите на другий екран, де відображається
+        лічильник рядків для даного виробу. Лічильник починається зі значення 0 для нового виробу.
+        Кожен раз, коли ви натискаєте на екран, лічильник збільшується на 1.
+        Додатково, на другому екрані присутні три корисні кнопки:
+    </string>
+    <string name="help_screen_setGoal_button_description">
+        Задати ціль: Ця кнопка відкриває діалогове вікно, де ви можете встановити нову ціль
+        для кількості рядків або скасувати її.
+    </string>
+    <string name="help_screen_subtractRow_button_description">
+        Відняти рядок: За допомогою цієї кнопки ви можете зменшити значення лічильника на 1,
+        якщо потрібно виправити рахунок.
+    </string>
+    <string name="help_screen_resetCounter_button_description">
+        Анулювати лічильник: Ця кнопка дозволяє повністю скинути лічильник рядків до початкового
+        значення - 0.
+    </string>
+    <string name="help_screen_final_text">
+        Нехай ваша творчість вільно розцвітає, а \"Row Tally Cat\" допоможе вам тримати під
+        контролем кількість вʼязаних рядків та досягти ваших цілей!
+    </string>
+
+</resources>
