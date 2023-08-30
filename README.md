@@ -20,62 +20,62 @@ Hi, my name is Andrii, and welcome to the Row Tally Cat project! This Android ap
 Knitting is a great way to relax and create beautiful things. But it can be tricky to keep track of how many rows you've completed, especially if you're working on a large project. That's where a knitting counter app can come in handy.
 My knitting counter app is a simple and easy-to-use tool that helps you keep track of your rows. When you first open the app, you'll see an empty screen with a button at the bottom to add a new project:
 
-<img src="./app/images/home-screen.png">
+<img src="./app/images/home-screen.png" width="306" height="658">
 
 
 Click the button to open a dialog where you can enter the name of your project (required) and an optional goal, which is the number of rows you want to complete.
 
-<img src="./app/images/add_product_dialog.png">
+<img src="./app/images/add_product_dialog.png" width="306" height="658">
 
 
 The newly created project will appear in a list on the main screen. You can add an unlimited number of projects.
 Also, you can sort by name or modification time:
 
-<img src="./app/images/sorted_by_name.png">
+<img src="./app/images/sorted_by_name.png" width="306" height="658">
 
 
-<img src="./app/images/sorted_by_modification_time.png">
+<img src="./app/images/sorted_by_modification_time.png" width="306" height="658">
 
 
 To start counting rows for a specific project, tap on the screen. The row counter will increase by one.
 
-<img src="./app/images/counter_screen.png">
+<img src="./app/images/counter_screen.png" width="306" height="658">
 
 There are also separate buttons for resetting the counter, setting a goal, and subtracting from the counter.
 
 The set goal dialog looks like this:
 
-<img src="./app/images/set_goal_dialog.png">
+<img src="./app/images/set_goal_dialog.png" width="306" height="658">
 
 And then you will see this message:
 
-<img src="./app/images/set_goal_message.png">
+<img src="./app/images/set_goal_message.png" width="306" height="658">
 
 If you set a goal, and you reach it, a dialog will appear to notify you. Let's reset the goal.
 
-<img src="./app/images/achieved_goal_dialog.png">
+<img src="./app/images/achieved_goal_dialog.png" width="306" height="658">
 
 If you navigate back to the main screen, you can see saved changes for this product counter(this also works for goals):
 
-<img src="./app/images/home_screen_after_counter_changes.png">
+<img src="./app/images/home_screen_after_counter_changes.png" width="306" height="658">
 
 Of course, you can delete the product, by clicking on the trash icon, and you'll see this message. If you miss-clicked you can "Undo" this deletion:
 
-<img src="./app/images/deleted_product_message.png">
+<img src="./app/images/deleted_product_message.png" width="306" height="658">
 
 
 The navigation drawer helps you to navigate between different screens:
 
-<img src="./app/images/navigation_drawer.png">
+<img src="./app/images/navigation_drawer.png" width="306" height="658">
 
 ### Help Screen
 The Help screen contains information on how to interact with the app. Here you can find a user guide.
 
-<img src="./app/images/help_screen.png">
+<img src="./app/images/help_screen.png" width="306" height="658">
 
 ### Settings Screen
 
-<img src="./app/images/settings_screen_init.png">
+<img src="./app/images/settings_screen_init.png" width="306" height="658">
 
 
 The Settings screen contains display settings and counter screen settings.
@@ -87,7 +87,7 @@ The display settings allow you to change the following parameters:
 
 If you choose dark mode, the app's appearance changes:
 
-<img src="./app/images/dark_mode.png">
+<img src="./app/images/dark_mode.png" width="306" height="658">
 
 #### Counter Screen Settings
 
@@ -100,13 +100,13 @@ All changes are displayed on the preview screen, allowing the user to preview ho
 
 For example, picking counter color:
 
-<img src="./app/images/picking_color.png">
+<img src="./app/images/picking_color.png" width="306" height="658">
 
 Also, this application is available in English and Ukrainian languages.
 
 After changing the language of the phone to Ukrainian:
 
-<img src="./app/images/language_change.png">
+<img src="./app/images/language_change.png" width="306" height="658">
 
 
 Thank you for your interest in my project. Feel free to explore the code and project structure. If you have any questions or suggestions, please don't hesitate to reach out!
