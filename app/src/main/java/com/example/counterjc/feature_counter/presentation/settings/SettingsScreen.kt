@@ -1,12 +1,16 @@
 package com.example.counterjc.feature_counter.presentation.settings
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.provider.MediaStore
 import android.provider.Settings.ACTION_DISPLAY_SETTINGS
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,16 +18,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ElevatedButton
-import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.OutlinedButton
@@ -35,31 +32,52 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.layoutId
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.counterjc.R
-import com.example.counterjc.feature_counter.presentation.counter.CounterEvent
+import com.example.counterjc.feature_counter.presentation.settings.components.ColorPicker
 import com.example.counterjc.feature_counter.presentation.settings.components.PreviewScreenItem
 import com.example.counterjc.feature_counter.presentation.settings.components.SettingsItem
 import com.example.counterjc.feature_counter.presentation.util.CustomTopAppBar
 import com.example.counterjc.feature_counter.presentation.util.NavigationDrawer
-import com.example.counterjc.ui.theme.PurpleGrey
 import kotlinx.coroutines.launch
+import java.io.IOException
 
+
+@SuppressLint("Recycle")
 @Composable
 fun SettingsScreen(
+    viewModel: SettingsViewModel = hiltViewModel(),
     navController: NavHostController,
-    context: Context
 ) {
+    val state = viewModel.state.value
+    val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
+
+    val pickMedia = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        if (uri != null) {
+            Log.d("URI", uri.toString())
+            val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
+            try {
+                context.openFileOutput("backgroundImage.jpg", Context.MODE_PRIVATE).use { stream ->
+                    if (!bitmap.compress(Bitmap.CompressFormat.JPEG, 95, stream)) {
+                        throw IOException("Couldn't save bitmap")
+                    }
+                }
+            }catch (e: IOException) {
+                e.printStackTrace()
+            }
+            viewModel.onEvent(SettingsEvent.SetBackgroundImage(uri.toString()))
+            viewModel.onEvent(SettingsEvent.SaveSettingsChanges)
+        }
+    }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -75,11 +93,13 @@ fun SettingsScreen(
                     title = stringResource(id = R.string.settings_page_title)
                 ) {
                     scope.launch {
+                        viewModel.onEvent(SettingsEvent.SaveSettingsChanges)
                         drawerState.open()
                     }
                 }
             }
         ) {values ->
+
 
             Column(
                 modifier = Modifier
@@ -87,7 +107,6 @@ fun SettingsScreen(
                     .padding(values)
                     .padding(16.dp),
                 verticalArrangement = Arrangement.Top,
-//                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 SettingsItem(
                     title = stringResource(id = R.string.settings_display_title)
@@ -112,7 +131,7 @@ fun SettingsScreen(
                         }
                     }
                 }
-                
+
                 SettingsItem(
                     title = stringResource(id = R.string.settings_counter_screen_setup_title)
                 ) {
@@ -121,61 +140,106 @@ fun SettingsScreen(
                             .fillMaxWidth()
                     ) {
                         // Left side
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth(0.5f),
-//                            verticalArrangement = Arrangement.Top,
-                            horizontalAlignment = Alignment.Start
-                        ) {
-                            Text(
-                                text = "Background image:"
+
+                        if (state.isShowCounterColorPicker) {
+                            ColorPicker(
+                                onEvent = viewModel::onEvent,
+                                isCounterColorPicker = true,
+                                initialColor = Color(state.counterColor)
                             )
-                            TextButton(
-                                onClick = {}
+                        } else if (state.isShowIconsColorPicker) {
+                            ColorPicker(
+                                onEvent = viewModel::onEvent,
+                                isCounterColorPicker = false,
+                                initialColor = Color(state.iconsColor)
+                            )
+                        } else {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth(0.5f),
+                                horizontalAlignment = Alignment.Start
                             ) {
                                 Text(
-                                    text = "Pick image"
+                                    text = "Background image:"
                                 )
-                            }
+                                TextButton(
+                                    onClick = {
+                                        pickMedia.launch(
+                                            PickVisualMediaRequest(
+                                                ActivityResultContracts.PickVisualMedia.ImageOnly
+                                            )
+                                        )
+                                    }
+                                ) {
+                                    Text(
+                                        text = "Pick image"
+                                    )
+                                }
+                                TextButton(
+                                    onClick = {
+                                        viewModel.onEvent(SettingsEvent.SetDefaultBackgroundImage(
+                                            "android.resource://com.example.counterjc/${R.drawable.cat_2}"
+                                        ))
+                                        viewModel.onEvent(SettingsEvent.SaveSettingsChanges)
+                                    }
+                                ) {
+                                    Text(
+                                        text = "Default Image"
+                                    )
+                                }
 
-                            Spacer(modifier = Modifier.height(16.dp))
+                                Spacer(modifier = Modifier.height(16.dp))
 
-                            Text(
-                                text = "Counter color:"
-                            )
-                            TextButton(
-                                onClick = {}
-                            ) {
                                 Text(
-                                    text = "Choose color"
+                                    text = "Counter color:"
                                 )
-                            }
+                                TextButton(
+                                    onClick = {
+                                        viewModel.onEvent(SettingsEvent.ShowCounterColorPicker)
+                                    }
+                                ) {
+                                    Text(
+                                        text = "Choose color"
+                                    )
+                                }
 
-                            Spacer(modifier = Modifier.height(16.dp))
+                                Spacer(modifier = Modifier.height(16.dp))
 
-                            Text(
-                                text = "Icons color:"
-                            )
-                            TextButton(
-                                onClick = {}
-                            ) {
                                 Text(
-                                    text = "Choose color"
+                                    text = "Icons color:"
                                 )
+                                TextButton(
+                                    onClick = {
+                                        viewModel.onEvent(SettingsEvent.ShowIconsColorPicker)
+                                    }
+                                ) {
+                                    Text(
+                                        text = "Choose color"
+                                    )
+                                }
+
                             }
                         }
 
-                        // Right side
+                        // Right side - Preview Screen
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth(),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(text = "Preview screen")
-                            
+
                             Spacer(modifier = Modifier.height(16.dp))
 
-                            PreviewScreenItem()
+                            PreviewScreenItem(
+                                imageUri = state.backgroundImage,
+                                counterColor = Color(state.counterColor),
+                                iconsColor = Color(state.iconsColor),
+                                context = context,
+                                counterOffsetX = state.counterOffsetX,
+                                counterOffsetY = state.counterOffsetY,
+                                onEvent = viewModel::onEvent
+                            )
                         }
                     }
                 }
