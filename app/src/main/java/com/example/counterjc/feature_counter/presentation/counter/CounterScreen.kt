@@ -2,7 +2,6 @@ package com.example.counterjc.feature_counter.presentation.counter
 
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,6 +17,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -30,6 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -40,12 +41,15 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImagePainter
+import coil.compose.SubcomposeAsyncImage
+import coil.compose.SubcomposeAsyncImageContent
+import coil.request.ImageRequest
+import coil.size.Size
 import com.example.counterjc.R
 import com.example.counterjc.feature_counter.presentation.counter.components.GoalDialog
 import com.example.counterjc.feature_counter.presentation.util.CustomTopAppBar
-import com.example.counterjc.ui.theme.PurpleGrey
 import com.example.counterjc.ui.theme.achievedGoalColor
-import com.example.counterjc.ui.theme.backgroundPanelColor
 
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
@@ -54,7 +58,7 @@ fun CounterScreen(
     viewModel: CounterViewModel = hiltViewModel(),
     navController: NavHostController
 ) {
-
+    val context = LocalContext.current
     val state = viewModel.counterState.value
     val snackBarHostState = remember {
         SnackbarHostState()
@@ -145,21 +149,33 @@ fun CounterScreen(
                         }
                     },
             ) {
-                //TODO: Insert custom image picked by user
-                Image(
-                    alpha = 0.75f,
-                    painter = painterResource(id = R.drawable.cat_2),
-                    contentDescription = "Background image",
+                SubcomposeAsyncImage(
                     modifier = Modifier
                         .fillMaxSize()
                         .align(Alignment.Center),
-                    contentScale = ContentScale.Crop
-                )
+                    alpha = 0.75f,
+                    contentScale = ContentScale.Crop,
+                    model = ImageRequest.Builder(context)
+                        .data(state.backgroundImage)
+                        .size(Size.ORIGINAL)
+                        .build(),
+                    contentDescription = "Background image"
+                ) {
+                    val imageState = painter.state
+                    if (
+                        imageState is AsyncImagePainter.State.Loading ||
+                        imageState is AsyncImagePainter.State.Error
+                    ) {
+                        CircularProgressIndicator()
+                    } else {
+                        SubcomposeAsyncImageContent()
+                    }
+                }
             }
             Text(
                 text = state.counter.toString(),
                 color = if (state.counter != state.goal || state.goal == 0) {
-                    backgroundPanelColor //TODO: Add color picker
+                    Color(state.counterColor)
                 } else {
                     achievedGoalColor
                 },
@@ -181,7 +197,7 @@ fun CounterScreen(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_goal),
                     contentDescription = "Set the goal",
-                    tint = PurpleGrey, //TODO: Add color picker for these 3 icons
+                    tint = Color(state.iconsColor),
                     modifier = Modifier
                         .clip(CircleShape)
                         .weight(1f)
@@ -192,7 +208,7 @@ fun CounterScreen(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_minus),
                     contentDescription = "Subtract row",
-                    tint = PurpleGrey,
+                    tint = Color(state.iconsColor),
                     modifier = Modifier
                         .clip(CircleShape)
                         .weight(1f)
@@ -203,7 +219,7 @@ fun CounterScreen(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_rabbit),
                     contentDescription = "Reset counter",
-                    tint = PurpleGrey,
+                    tint = Color(state.iconsColor),
                     modifier = Modifier
                         .clip(CircleShape)
                         .weight(1f)

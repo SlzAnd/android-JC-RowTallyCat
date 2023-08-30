@@ -1,7 +1,6 @@
 package com.example.counterjc.feature_counter.presentation.navigation
 
 import android.annotation.SuppressLint
-import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -18,7 +17,6 @@ import com.example.counterjc.feature_counter.presentation.settings.SettingsScree
 @Composable
 fun SetupNavGraph(
     navController: NavHostController,
-    context: Context
 ) {
 
     NavHost(
@@ -59,7 +57,6 @@ fun SetupNavGraph(
         ) {
             SettingsScreen(
                 navController = navController,
-                context = context
             )
         }
     }

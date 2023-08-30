@@ -5,17 +5,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.counterjc.R
 import com.example.counterjc.feature_counter.domain.model.Product
+import com.example.counterjc.feature_counter.domain.use_case.LoadBackgroundImage
 import com.example.counterjc.feature_counter.domain.use_case.ProductUseCases
+import com.example.counterjc.feature_counter.presentation.datastore.StoreSettings
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CounterViewModel @Inject constructor(
+    private val storeSettings: StoreSettings,
     private val productUseCases: ProductUseCases,
+    private val loadBackgroundImage: LoadBackgroundImage,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -33,7 +36,20 @@ class CounterViewModel @Inject constructor(
                     _counterState.value = _counterState.value.copy(
                         counter = product.currentCounterValue,
                         goal = product.goalValue,
-                        name = product.name
+                        name = product.name,
+
+                    )
+                }
+
+                storeSettings.getSettings().collect {settings ->
+                    _counterState.value = _counterState.value.copy(
+                        counterColor = settings.counterColor,
+                        iconsColor = settings.iconsColor,
+                        backgroundImage = if (settings.isDefaultBackgroundImage) {
+                            "android.resource://com.example.counterjc/${R.drawable.cat_2}"
+                        } else {
+                            loadBackgroundImage()
+                        }
                     )
                 }
             }
