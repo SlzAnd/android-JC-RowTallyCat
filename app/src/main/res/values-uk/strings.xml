@@ -5,7 +5,7 @@
     <string name="goal_dialog_title">Встановити ціль?</string>
     <string name="goal_dialog_message">Тут можна вказати яку кількість рядків
         тобі необхідно зробити та ми повідомимо коли вона буде досягнута</string>
-    <string name="goal_dialog_positive_button_text">ОК</string>
+    <string name="positive_button_text">ОК</string>
     <string name="goal_dialog_cancel_button_text">Вийти</string>
     <string name="goal_dialog_reset_button_text">Прибрати</string>
     <string name="goal_dialog_textfield_label">Кількість рядків</string>

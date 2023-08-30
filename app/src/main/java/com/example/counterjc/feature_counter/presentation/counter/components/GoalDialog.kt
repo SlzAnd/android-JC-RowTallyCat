@@ -157,7 +157,7 @@ fun GoalDialog(
                         },
                     ) {
                         Text(
-                            text = stringResource(id = R.string.goal_dialog_positive_button_text),
+                            text = stringResource(id = R.string.positive_button_text),
                         )
                     }
                 }

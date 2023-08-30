@@ -17,7 +17,7 @@ val achievedGoalColor = Color(0xFF880061)
 
 val productItemBackgroundColor = Color(0xFFF3E5F5)
 val productItemBackgroundColor3 = Color(0xFFF5F5F5)
-val productItemBackgroundColor2 = Color(0xFFECEFF1)
+val productItemBackgroundColor2 = Color(0xFFFFFFFF)
 
 val Purple10 = Color(0xff220033)
 val Purple20 = Color(0xff440066)

@@ -1,28 +1,37 @@
 package com.example.counterjc.feature_counter.presentation.settings.components
 
-import androidx.compose.foundation.Image
+import android.annotation.SuppressLint
+import android.content.Context
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -30,16 +39,28 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
+import coil.compose.AsyncImagePainter
+import coil.compose.SubcomposeAsyncImage
+import coil.compose.SubcomposeAsyncImageContent
+import coil.request.ImageRequest
 import com.example.counterjc.R
-import com.example.counterjc.feature_counter.presentation.counter.CounterEvent
-import com.example.counterjc.ui.theme.PurpleGrey
-import com.example.counterjc.ui.theme.achievedGoalColor
-import com.example.counterjc.ui.theme.backgroundPanelColor
+import com.example.counterjc.feature_counter.presentation.settings.SettingsEvent
 
+
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun PreviewScreenItem(
+    imageUri: String,
+    counterColor: Color,
+    iconsColor: Color,
+    context: Context,
+    counterOffsetX: Float,
+    counterOffsetY: Float,
+    onEvent: (SettingsEvent) -> Unit,
+    ) {
 
-) {
+    val d = LocalDensity.current
+
     val constraints = ConstraintSet{
         val mainBox = createRefFor("main_box")
         val navigationBar = createRefFor("navigation_bar")
@@ -58,7 +79,7 @@ fun PreviewScreenItem(
         }
 
         constrain(counterText) {
-            top.linkTo(parent.top)
+            top.linkTo(parent.top, margin = (-20).dp)
             start.linkTo(parent.start)
             end.linkTo(parent.end)
         }
@@ -67,7 +88,8 @@ fun PreviewScreenItem(
 
     Box (
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
+            .height(300.dp)
             .drawBehind {
                 drawRoundRect(
                     color = Color.White,
@@ -78,7 +100,6 @@ fun PreviewScreenItem(
                 )
             }
     ) {
-
         ConstraintLayout(
             constraintSet = constraints,
             modifier = Modifier
@@ -89,25 +110,49 @@ fun PreviewScreenItem(
                     .background(Color.LightGray)
                     .layoutId("main_box")
             ) {
-                //TODO: Insert custom image picked by user
-                Image(
-                    alpha = 0.75f,
-                    painter = painterResource(id = R.drawable.cat_2),
-                    contentDescription = "Background image",
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .align(Alignment.Center),
-                    contentScale = ContentScale.Crop
-                )
+                SubcomposeAsyncImage(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .align(Alignment.Center),
+                        alpha = 0.75f,
+                        contentScale = ContentScale.Crop,
+                        model = ImageRequest.Builder(context)
+                            .data(imageUri)
+                            .size(coil.size.Size.ORIGINAL)
+                            .build(),
+                        contentDescription = "Background image"
+                    ) {
+                        val state = painter.state
+                        if (
+                            state is AsyncImagePainter.State.Loading ||
+                            state is AsyncImagePainter.State.Error
+                        ) {
+                            CircularProgressIndicator()
+                        } else {
+                            SubcomposeAsyncImageContent()
+                        }
+                    }
+
+
             }
             Text(
                 text = "0",
-                color = backgroundPanelColor,
+                color = counterColor,
                 textAlign = TextAlign.Center,
                 fontSize = 70.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .layoutId("counter_text")
+                    .offset(
+                        x = (counterOffsetX/d.density).dp,
+                        y = (counterOffsetY/d.density).dp
+                    )
+                    .pointerInput(Unit) {
+                        detectDragGestures { change, dragAmount ->
+                            change.consume()
+                            onEvent(SettingsEvent.SetCounterOffset(dragAmount.x, dragAmount.y))
+                        }
+                    }
             )
 
             Column (
@@ -122,7 +167,7 @@ fun PreviewScreenItem(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_goal),
                     contentDescription = "Set the goal",
-                    tint = PurpleGrey, //TODO: Add color picker for these 3 icons
+                    tint = iconsColor,
                     modifier = Modifier
                         .clip(CircleShape)
                         .weight(1f)
@@ -132,7 +177,7 @@ fun PreviewScreenItem(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_minus),
                     contentDescription = "Subtract row",
-                    tint = PurpleGrey,
+                    tint = iconsColor,
                     modifier = Modifier
                         .clip(CircleShape)
                         .weight(1f)
@@ -142,7 +187,7 @@ fun PreviewScreenItem(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_rabbit),
                     contentDescription = "Reset counter",
-                    tint = PurpleGrey,
+                    tint = iconsColor,
                     modifier = Modifier
                         .clip(CircleShape)
                         .weight(1f)
@@ -153,3 +198,7 @@ fun PreviewScreenItem(
         }
     }
 }
+
+
+
+
