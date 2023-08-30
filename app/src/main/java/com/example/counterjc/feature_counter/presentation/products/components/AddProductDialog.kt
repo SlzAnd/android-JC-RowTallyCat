@@ -1,6 +1,7 @@
 package com.example.counterjc.feature_counter.presentation.products.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -53,6 +54,7 @@ fun AddProductDialog(
                 .background(
                     MaterialTheme.colorScheme.background
                 )
+                .border(1.dp, MaterialTheme.colorScheme.onBackground)
                 .padding(16.dp),
             contentAlignment = Alignment.Center
         ) {
