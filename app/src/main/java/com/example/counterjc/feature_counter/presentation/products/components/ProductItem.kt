@@ -11,15 +11,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,7 +39,7 @@ fun ProductItem(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surfaceVariant)
-            .padding(horizontal = 3.dp, vertical = 20.dp)
+            .padding(horizontal = 3.dp, vertical = 16.dp)
     ) {
         Row(
             modifier = modifier
@@ -57,15 +56,18 @@ fun ProductItem(
             )
 
             Spacer(modifier = Modifier.width(16.dp))
+
             Text(
                 text = product.name,
                 style = MaterialTheme.typography.bodyMedium,
                 maxLines = 2,
                 textAlign = TextAlign.Center,
                 modifier = modifier
-                    .requiredWidth(250.dp)
+                    .weight(1f)
             )
+
             Spacer(modifier = Modifier.width(10.dp))
+
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -82,7 +84,6 @@ fun ProductItem(
                 )
             }
             Spacer(modifier = Modifier.width(10.dp))
-
 
             IconButton(
                 modifier = Modifier,

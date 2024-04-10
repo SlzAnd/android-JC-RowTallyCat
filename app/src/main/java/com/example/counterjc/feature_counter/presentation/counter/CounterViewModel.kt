@@ -46,7 +46,7 @@ class CounterViewModel @Inject constructor(
                         counterColor = settings.counterColor,
                         iconsColor = settings.iconsColor,
                         backgroundImage = if (settings.isDefaultBackgroundImage) {
-                            "android.resource://com.example.counterjc/${R.drawable.cat_2}"
+                            "android.resource://com.example.counterjc/${R.drawable.mountain}"
                         } else {
                             loadBackgroundImage()
                         }

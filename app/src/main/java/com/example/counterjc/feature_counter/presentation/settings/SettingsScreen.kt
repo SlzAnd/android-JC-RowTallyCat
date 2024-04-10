@@ -23,7 +23,6 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -178,7 +177,7 @@ fun SettingsScreen(
                                 TextButton(
                                     onClick = {
                                         viewModel.onEvent(SettingsEvent.SetDefaultBackgroundImage(
-                                            "android.resource://com.example.counterjc/${R.drawable.cat_2}"
+                                            "android.resource://com.example.counterjc/${R.drawable.mountain}"
                                         ))
                                         viewModel.onEvent(SettingsEvent.SaveSettingsChanges)
                                     }

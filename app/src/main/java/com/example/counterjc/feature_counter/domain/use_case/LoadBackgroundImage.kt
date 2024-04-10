@@ -1,11 +1,9 @@
 package com.example.counterjc.feature_counter.domain.use_case
 
 import android.content.Context
-import android.util.Log
 import com.example.counterjc.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.IOException
 
 class LoadBackgroundImage(
     val context: Context
@@ -17,11 +15,11 @@ class LoadBackgroundImage(
                 val files = context.filesDir.listFiles()
                 files?.filter {
                     it.canRead() && it.isFile && it.name.endsWith( ".jpg")
-                }?.get(0)?.path ?: "android.resource://com.example.counterjc/${R.drawable.cat_2}"
+                }?.get(0)?.path ?: "android.resource://com.example.counterjc/${R.drawable.mountain}"
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            "android.resource://com.example.counterjc/${R.drawable.cat_2}"
+            "android.resource://com.example.counterjc/${R.drawable.mountain}"
         }
     }
 }

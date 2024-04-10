@@ -28,7 +28,7 @@ class SettingsViewModel @Inject constructor(
                     iconsColor = settings.iconsColor,
                     isPickedDefaultBackgroundImage = settings.isDefaultBackgroundImage,
                     backgroundImage = if (settings.isDefaultBackgroundImage) {
-                        "android.resource://com.example.counterjc/${R.drawable.cat_2}"
+                        "android.resource://com.example.counterjc/${R.drawable.mountain}"
                     } else {
                         loadBackgroundImage()
                     }
