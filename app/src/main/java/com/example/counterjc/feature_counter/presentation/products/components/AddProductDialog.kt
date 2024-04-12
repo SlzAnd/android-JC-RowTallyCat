@@ -109,8 +109,10 @@ fun AddProductDialog(
                     onValueChange = {
                         textGoal = it
                         if (it.isNotBlank()) {
-                            val newGoal = it.trim().toInt()
-                            onEvent(ProductEvent.SetGoal(newGoal))
+                            val newGoal = it.trim().toIntOrNull()
+                            newGoal?.let { goal ->
+                                onEvent(ProductEvent.SetGoal(goal))
+                            }
                         } else {
                             onEvent(ProductEvent.SetGoal(0))
                         }

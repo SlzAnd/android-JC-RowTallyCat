@@ -15,11 +15,11 @@ class LoadBackgroundImage(
                 val files = context.filesDir.listFiles()
                 files?.filter {
                     it.canRead() && it.isFile && it.name.endsWith( ".jpg")
-                }?.get(0)?.path ?: "android.resource://com.example.counterjc/${R.drawable.mountain}"
+                }?.get(0)?.path ?: "android.resource://dusol.apps.rowtallycat/${R.drawable.mountain}"
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            "android.resource://com.example.counterjc/${R.drawable.mountain}"
+            "android.resource://dusol.apps.rowtallycat/${R.drawable.mountain}"
         }
     }
 }

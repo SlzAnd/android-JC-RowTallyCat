@@ -177,7 +177,7 @@ fun SettingsScreen(
                                 TextButton(
                                     onClick = {
                                         viewModel.onEvent(SettingsEvent.SetDefaultBackgroundImage(
-                                            "android.resource://com.example.counterjc/${R.drawable.mountain}"
+                                            "android.resource://dusol.apps.rowtallycat/${R.drawable.mountain}"
                                         ))
                                         viewModel.onEvent(SettingsEvent.SaveSettingsChanges)
                                     }

@@ -46,7 +46,7 @@ class CounterViewModel @Inject constructor(
                         counterColor = settings.counterColor,
                         iconsColor = settings.iconsColor,
                         backgroundImage = if (settings.isDefaultBackgroundImage) {
-                            "android.resource://com.example.counterjc/${R.drawable.mountain}"
+                            "android.resource://dusol.apps.rowtallycat/${R.drawable.mountain}"
                         } else {
                             loadBackgroundImage()
                         }

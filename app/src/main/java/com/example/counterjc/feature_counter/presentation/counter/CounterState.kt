@@ -10,5 +10,5 @@ data class CounterState(
     val isShowSetGoalDialog: Boolean = false,
     val counterColor: Long = 0xFFBDBDBD,
     val iconsColor: Long = 0xFF433c51,
-    val backgroundImage: String = "android.resource://com.example.counterjc/${R.drawable.mountain}",
+    val backgroundImage: String = "android.resource://dusol.apps.rowtallycat/${R.drawable.mountain}",
 )
