@@ -4,36 +4,35 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarResult
-import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment.Companion.CenterVertically
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -50,6 +49,7 @@ import com.example.counterjc.feature_counter.presentation.util.CustomTopAppBar
 import com.example.counterjc.feature_counter.presentation.util.NavigationDrawer
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalLayoutApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ProductsScreen(
@@ -107,29 +107,35 @@ fun ProductsScreen(
 
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(padding)
+                    .fillMaxSize()
+                    .padding(padding),
             ) {
-                Row (
+                Column (
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(12.dp),
-                    verticalAlignment = CenterVertically,
-                    horizontalArrangement = Arrangement.Center
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+
                     Text(
                         text = stringResource(id = R.string.sorting_area_title),
                         style = MaterialTheme.typography.titleSmall
                     )
 
-                    Spacer(modifier = Modifier.width(8.dp))
+                    FlowRow(
+                        modifier = Modifier.align(Alignment.Start),
+                        verticalArrangement = Arrangement.Center
+                    ) {
 
-                    SortType.values().forEach { sortType ->
-                        SortTypeItem(
-                            onClick = viewModel::onEvent,
-                            sortType = sortType,
-                            state = state
-                        )
+                        SortType.entries.forEach { sortType ->
+                            SortTypeItem(
+                                modifier = Modifier,
+                                onClick = viewModel::onEvent,
+                                sortType = sortType,
+                                state = state
+                            )
+                        }
                     }
                 }
 

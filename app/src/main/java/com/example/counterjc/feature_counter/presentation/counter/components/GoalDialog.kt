@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import com.example.counterjc.R
 import com.example.counterjc.feature_counter.presentation.counter.CounterEvent
 import com.example.counterjc.feature_counter.presentation.counter.CounterState
+import com.example.counterjc.feature_counter.presentation.products.ProductEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -50,12 +51,13 @@ fun GoalDialog(
     coroutineScope: CoroutineScope
 ) {
     val rowsString = when (counterState.goal) {
-                        1 -> stringResource(id = R.string.goal_set_snackbar_one_row)
-                        in 2..4 -> stringResource(id = R.string.goal_set_snackbar_2_4_row)
-                        else -> stringResource(id = R.string.goal_set_snackbar_more_rows)
-                    }
+        1 -> stringResource(id = R.string.goal_set_snackbar_one_row)
+        in 2..4 -> stringResource(id = R.string.goal_set_snackbar_2_4_row)
+        else -> stringResource(id = R.string.goal_set_snackbar_more_rows)
+    }
     val cleanMessage = stringResource(id = R.string.goal_clean_snackbar_message)
-    val setMessage = "${stringResource(id = R.string.goal_set_snackbar_message)} ${counterState.goal} $rowsString"
+    val setMessage =
+        "${stringResource(id = R.string.goal_set_snackbar_message)} ${counterState.goal} $rowsString"
     var textGoal by rememberSaveable {
         if (counterState.goal <= 0) {
             mutableStateOf("")
@@ -63,7 +65,6 @@ fun GoalDialog(
             mutableStateOf(counterState.goal.toString())
         }
     }
-    var newGoal = 0
 
     AlertDialog(
         onDismissRequest = {
@@ -78,7 +79,7 @@ fun GoalDialog(
                 .background(MaterialTheme.colorScheme.background)
                 .padding(16.dp),
             contentAlignment = Alignment.Center
-        ){
+        ) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -99,10 +100,12 @@ fun GoalDialog(
 
                 TextField(
                     value = textGoal,
-                    onValueChange = {textGoal = it
+                    onValueChange = {
+                        textGoal = it
                         if (it.isNotBlank()) {
-                            newGoal = it.trim().toInt()
-                            onAction(CounterEvent.SetGoal(newGoal))
+                            it.trim().toIntOrNull()?.let { goal ->
+                                onAction(CounterEvent.SetGoal(goal))
+                            }
                         } else {
                             onAction(CounterEvent.SetGoal(0))
                         }
@@ -147,13 +150,13 @@ fun GoalDialog(
                         onClick = {
                             onAction(CounterEvent.HideSetGoalDialog)
                             onAction(CounterEvent.HideAchievedGoalDialog)
-                                coroutineScope.launch {
-                                    snackBarHostState
-                                        .showSnackbar(
-                                            setMessage,
-                                            duration = SnackbarDuration.Short
-                                        )
-                                }
+                            coroutineScope.launch {
+                                snackBarHostState
+                                    .showSnackbar(
+                                        setMessage,
+                                        duration = SnackbarDuration.Short
+                                    )
+                            }
                         },
                     ) {
                         Text(

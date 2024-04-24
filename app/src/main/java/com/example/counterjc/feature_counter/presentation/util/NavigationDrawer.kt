@@ -43,7 +43,8 @@ fun NavigationDrawer(
     navController: NavHostController
 ) {
     ModalDrawerSheet(
-        modifier = Modifier.fillMaxWidth(0.8f)
+        modifier = Modifier
+            .padding(end = 65.dp)
     ) {
         DrawerHeader()
 

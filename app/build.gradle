@@ -25,8 +25,8 @@ android {
         applicationId "dusol.apps.rowtallycat"
         minSdk 24
         targetSdk 34
-        versionCode 1
-        versionName "1.0"
+        versionCode 101
+        versionName "1.0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -41,6 +41,14 @@ android {
             }
         }
     }
+    signingConfigs {
+        create("release") {
+            storeFile = file("./rtcKeyNew.jks")
+            storePassword = "784512SaUA"
+            keyAlias = "RowTallyCat"
+            keyPassword = "784512SaUA"
+        }
+    }
 
     ksp {
         arg("room.schemaLocation", "$projectDir/schemas")
@@ -51,6 +59,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {
