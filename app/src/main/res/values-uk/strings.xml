@@ -10,6 +10,11 @@
     <string name="goal_dialog_reset_button_text">Прибрати</string>
     <string name="goal_dialog_textfield_label">Кількість рядків</string>
 
+    <string name="settings_display_title">Налаштування екрану</string>
+    <string name="settings_display_description">
+        Змінити налаштування екрану (Яскравість, Темна/Світла тема тощо)
+    </string>
+    <string name="settings_counter_screen_setup_title">Налаштувати екран лічильника</string>
 
     <string name="achieved_goal_dialog_title">Ціль досягнуто!</string>
     <string name="achieved_goal_dialog_message">Гарна робота! Вказана раніше ціль була досягнута,
@@ -23,6 +28,8 @@
 
     <string name="goal_clean_snackbar_title">Ціль відсутня!</string>
     <string name="goal_clean_snackbar_message">Ціль була успішно анульована!</string>
+
+    <string name="goal_error_message">Ваша мета повинна бути цілим числом і більшою за поточне значення лічильника</string>
 
     <string name="drawer_menu_item_home">Додому</string>
     <string name="drawer_menu_item_settings">Налаштування</string>

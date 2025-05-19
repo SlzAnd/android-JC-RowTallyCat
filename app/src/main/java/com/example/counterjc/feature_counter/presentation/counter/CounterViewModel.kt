@@ -31,7 +31,7 @@ class CounterViewModel @Inject constructor(
     init {
         savedStateHandle.get<Int>("productId")?.let {productId ->
             viewModelScope.launch {
-                productUseCases.getProduct(productId)?.also {product ->
+                productUseCases.getProduct(productId)?.also { product ->
                     currentProductId = product.id
                     _counterState.value = _counterState.value.copy(
                         counter = product.currentCounterValue,
@@ -122,5 +122,4 @@ class CounterViewModel @Inject constructor(
             }
         }
     }
-
 }

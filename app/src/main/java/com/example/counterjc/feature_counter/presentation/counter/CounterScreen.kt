@@ -13,11 +13,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -40,6 +40,8 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
@@ -52,7 +54,7 @@ import com.example.counterjc.feature_counter.presentation.util.CustomTopAppBar
 import com.example.counterjc.ui.theme.achievedGoalColor
 
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun CounterScreen(
     viewModel: CounterViewModel = hiltViewModel(),
@@ -65,43 +67,47 @@ fun CounterScreen(
     }
     val coroutineScope = rememberCoroutineScope()
 
-   val constraints = ConstraintSet{
-       val mainBox = createRefFor("main_box")
-       val navigationBar = createRefFor("navigation_bar")
-       val counterText = createRefFor("counter_text")
+    val constraints = ConstraintSet {
+        val mainBox = createRefFor("main_box")
+        val navigationBar = createRefFor("navigation_bar")
+        val counterText = createRefFor("counter_text")
 
-       constrain(mainBox) {
-           top.linkTo(parent.top)
-           bottom.linkTo(parent.bottom)
-           start.linkTo(parent.start)
-           end.linkTo(parent.end)
-       }
+        constrain(mainBox) {
+            top.linkTo(parent.top)
+            bottom.linkTo(parent.bottom)
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+        }
 
-       constrain(navigationBar) {
-           bottom.linkTo(parent.bottom, margin = 20.dp)
-           end.linkTo(parent.end)
-       }
+        constrain(navigationBar) {
+            bottom.linkTo(parent.bottom, margin = 20.dp)
+            end.linkTo(parent.end)
+        }
 
-       constrain(counterText) {
-           top.linkTo(parent.top)
-           start.linkTo(parent.start)
-           end.linkTo(parent.end)
-       }
-   }
+        constrain(counterText) {
+            top.linkTo(parent.top)
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+        }
+    }
+
+    LifecycleEventEffect(Lifecycle.Event.ON_PAUSE) {
+        viewModel.onEvent(CounterEvent.SaveProduct)
+    }
 
     Scaffold(
         topBar = {
-                 CustomTopAppBar(
-                     icon = Icons.Filled.ArrowBack,
-                     iconDescription = "Back to the home screen",
-                     title = state.name,
-                     onIconClick = {
-                         viewModel.onEvent(CounterEvent.SaveProduct)
-                         navController.popBackStack()
-                     }
-                 )
+            CustomTopAppBar(
+                icon = Icons.AutoMirrored.Filled.ArrowBack,
+                iconDescription = "Back to the home screen",
+                title = state.name,
+                onIconClick = {
+                    viewModel.onEvent(CounterEvent.SaveProduct)
+                    navController.popBackStack()
+                }
+            )
         },
-        snackbarHost = {SnackbarHost(snackBarHostState) }
+        snackbarHost = { SnackbarHost(snackBarHostState) }
     ) {
 
         if (viewModel.counterState.value.isShowAchievedGoalDialog) {
@@ -185,7 +191,7 @@ fun CounterScreen(
                 modifier = Modifier
                     .layoutId("counter_text")
             )
-            Column (
+            Column(
                 modifier = Modifier
                     .height(270.dp)
                     .width(70.dp)
@@ -194,16 +200,40 @@ fun CounterScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_goal),
-                    contentDescription = "Set the goal",
-                    tint = Color(state.iconsColor),
+                Box(
                     modifier = Modifier
-                        .clip(CircleShape)
-                        .weight(1f)
-                        .size(50.dp)
-                        .clickable { viewModel.onEvent(CounterEvent.ShowSetGoalDialog) }
-                )
+                        .weight(1f),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_goal),
+                        contentDescription = "Set the goal",
+                        tint = Color(state.iconsColor),
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .size(50.dp)
+                            .clickable { viewModel.onEvent(CounterEvent.ShowSetGoalDialog) }
+                    )
+
+                    if (state.goal > 0) {
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.TopEnd)
+                                .height(24.dp)
+                                .clip(CircleShape)
+                                .background(Color.LightGray.copy(alpha = 0.5f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "${state.goal}",
+                                color = Color.Black,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(horizontal = 4.dp)
+                            )
+                        }
+                    }
+                }
 
                 Icon(
                     painter = painterResource(id = R.drawable.ic_minus),
