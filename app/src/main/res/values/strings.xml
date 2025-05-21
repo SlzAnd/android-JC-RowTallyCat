@@ -52,7 +52,7 @@
     <string name="deleted_product_snackbar_message_second_part">was deleted</string>
     <string name="deleted_product_snackbar_action">Undo</string>
 
-    <string name="help_screen_title">About app</string>
+    <string name="help_screen_title">About</string>
     <string name="help_screen_text">
         \"Row Tally Cat\" is a convenient tool designed for knitting enthusiasts.
         It assists you in keeping track of the number of rows you knit for each of your creations.

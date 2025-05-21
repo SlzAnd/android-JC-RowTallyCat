@@ -2,6 +2,9 @@ package com.example.counterjc.feature_counter.presentation.counter
 
 
 import android.annotation.SuppressLint
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,15 +18,20 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,9 +59,11 @@ import coil.size.Size
 import com.example.counterjc.R
 import com.example.counterjc.feature_counter.presentation.counter.components.GoalDialog
 import com.example.counterjc.feature_counter.presentation.util.CustomTopAppBar
+import com.example.counterjc.ui.theme.DarkPurple80
 import com.example.counterjc.ui.theme.achievedGoalColor
 
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun CounterScreen(
@@ -66,6 +76,10 @@ fun CounterScreen(
         SnackbarHostState()
     }
     val coroutineScope = rememberCoroutineScope()
+    val vibrator = context.getSystemService(Vibrator::class.java)
+    var isLoading by rememberSaveable {
+        mutableStateOf(false)
+    }
 
     val constraints = ConstraintSet {
         val mainBox = createRefFor("main_box")
@@ -98,9 +112,8 @@ fun CounterScreen(
     Scaffold(
         topBar = {
             CustomTopAppBar(
-                icon = Icons.AutoMirrored.Filled.ArrowBack,
-                iconDescription = "Back to the home screen",
                 title = state.name,
+                icon = Icons.AutoMirrored.Filled.ArrowBack,
                 onIconClick = {
                     viewModel.onEvent(CounterEvent.SaveProduct)
                     navController.popBackStack()
@@ -108,8 +121,7 @@ fun CounterScreen(
             )
         },
         snackbarHost = { SnackbarHost(snackBarHostState) }
-    ) {
-
+    ) { padding ->
         if (viewModel.counterState.value.isShowAchievedGoalDialog) {
             // Dialog window which appears when user achieved the goal of rows
             GoalDialog(
@@ -133,129 +145,173 @@ fun CounterScreen(
             )
         }
 
-        ConstraintLayout(
-            constraintSet = constraints,
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
+                .padding(padding)
         ) {
-            Box(
+            ConstraintLayout(
+                constraintSet = constraints,
                 modifier = Modifier
-                    .background(Color.LightGray)
-                    .layoutId("main_box")
-                    .clickable(enabled = true) {
-                        if (state.counter != state.goal || state.goal <= 0) {
-                            viewModel.onEvent(CounterEvent.Increase)
-                        }
-                        if (
-                            (state.counter == state.goal - 1 && state.goal != 0) ||
-                            (state.counter == state.goal && state.goal != 0)
-                        ) {
-                            viewModel.onEvent(CounterEvent.ShowAchievedGoalDialog)
-                        }
-                    },
-            ) {
-                SubcomposeAsyncImage(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .align(Alignment.Center),
-                    alpha = 0.75f,
-                    contentScale = ContentScale.Crop,
-                    model = ImageRequest.Builder(context)
-                        .data(state.backgroundImage)
-                        .size(Size.ORIGINAL)
-                        .build(),
-                    contentDescription = "Background image"
-                ) {
-                    val imageState = painter.state
-                    if (
-                        imageState is AsyncImagePainter.State.Loading ||
-                        imageState is AsyncImagePainter.State.Error
-                    ) {
-                        CircularProgressIndicator()
-                    } else {
-                        SubcomposeAsyncImageContent()
-                    }
-                }
-            }
-            Text(
-                text = state.counter.toString(),
-                color = if (state.counter != state.goal || state.goal == 0) {
-                    Color(state.counterColor)
-                } else {
-                    achievedGoalColor
-                },
-                textAlign = TextAlign.Center,
-                fontSize = 130.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .layoutId("counter_text")
-            )
-            Column(
-                modifier = Modifier
-                    .height(270.dp)
-                    .width(70.dp)
-                    .layoutId("navigation_bar")
-                    .background(Color.Transparent),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .fillMaxSize()
             ) {
                 Box(
                     modifier = Modifier
-                        .weight(1f),
-                    contentAlignment = Alignment.Center
+                        .background(Color.LightGray)
+                        .layoutId("main_box")
+                        .clickable {
+                            if (state.counter != state.goal || state.goal <= 0) {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    vibrator?.vibrate(
+                                        VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE)
+                                    )
+                                } else {
+                                    vibrator?.vibrate(50)
+                                }
+                                viewModel.onEvent(CounterEvent.Increase)
+                            }
+                            if (
+                                (state.counter == state.goal - 1 && state.goal != 0) ||
+                                (state.counter == state.goal && state.goal != 0)
+                            ) {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    vibrator?.vibrate(
+                                        VibrationEffect.createWaveform(longArrayOf(0, 200, 100, 200, 100, 200), -1)
+                                    )
+                                } else {
+                                    vibrator?.vibrate(longArrayOf(0, 200, 100, 200, 100, 200), -1)
+                                }
+                                viewModel.onEvent(CounterEvent.ShowAchievedGoalDialog)
+                            }
+                        },
                 ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_goal),
-                        contentDescription = "Set the goal",
-                        tint = Color(state.iconsColor),
+                    SubcomposeAsyncImage(
                         modifier = Modifier
-                            .clip(CircleShape)
-                            .size(50.dp)
-                            .clickable { viewModel.onEvent(CounterEvent.ShowSetGoalDialog) }
-                    )
-
-                    if (state.goal > 0) {
-                        Box(
-                            modifier = Modifier
-                                .align(Alignment.TopEnd)
-                                .height(24.dp)
-                                .clip(CircleShape)
-                                .background(Color.LightGray.copy(alpha = 0.5f)),
-                            contentAlignment = Alignment.Center
+                            .fillMaxSize()
+                            .align(Alignment.Center),
+                        alpha = 0.75f,
+                        contentScale = ContentScale.Crop,
+                        model = ImageRequest.Builder(context)
+                            .data(state.backgroundImage)
+                            .size(Size.ORIGINAL)
+                            .build(),
+                        contentDescription = "Background image"
+                    ) {
+                        val imageState = painter.state
+                        if (
+                            imageState is AsyncImagePainter.State.Loading ||
+                            imageState is AsyncImagePainter.State.Error
                         ) {
-                            Text(
-                                text = "${state.goal}",
-                                color = Color.Black,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(horizontal = 4.dp)
-                            )
+                            isLoading = true
+                        } else {
+                            isLoading = false
+                            SubcomposeAsyncImageContent()
                         }
                     }
                 }
-
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_minus),
-                    contentDescription = "Subtract row",
-                    tint = Color(state.iconsColor),
+                Text(
+                    text = state.counter.toString(),
+                    color = if (state.counter != state.goal || state.goal == 0) {
+                        Color(state.counterColor)
+                    } else {
+                        achievedGoalColor
+                    },
+                    textAlign = TextAlign.Center,
+                    fontSize = 130.sp,
+                    fontWeight = FontWeight.Bold,
                     modifier = Modifier
-                        .clip(CircleShape)
-                        .weight(1f)
-                        .size(50.dp)
-                        .clickable { viewModel.onEvent(CounterEvent.Decrease) }
+                        .layoutId("counter_text")
                 )
-
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_rabbit),
-                    contentDescription = "Reset counter",
-                    tint = Color(state.iconsColor),
+                Column(
                     modifier = Modifier
-                        .clip(CircleShape)
-                        .weight(1f)
-                        .size(50.dp)
-                        .clickable { viewModel.onEvent(CounterEvent.ClearCounter) }
-                )
+                        .height(270.dp)
+                        .width(70.dp)
+                        .layoutId("navigation_bar")
+                        .background(Color.Transparent),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .weight(1f),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_goal),
+                            contentDescription = "Set the goal",
+                            tint = Color(state.iconsColor),
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .size(50.dp)
+                                .clickable { viewModel.onEvent(CounterEvent.ShowSetGoalDialog) }
+                        )
+
+                        if (state.goal > 0) {
+                            Box(
+                                modifier = Modifier
+                                    .align(Alignment.TopEnd)
+                                    .height(24.dp)
+                                    .clip(CircleShape)
+                                    .background(Color.LightGray.copy(alpha = 0.5f)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "${state.goal}",
+                                    color = Color.Black,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.padding(horizontal = 4.dp)
+                                )
+                            }
+                        }
+                    }
+
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_minus),
+                        contentDescription = "Subtract row",
+                        tint = Color(state.iconsColor),
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .weight(1f)
+                            .size(50.dp)
+                            .clickable { viewModel.onEvent(CounterEvent.Decrease) }
+                    )
+
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_rabbit),
+                        contentDescription = "Reset counter",
+                        tint = Color(state.iconsColor),
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .weight(1f)
+                            .size(50.dp)
+                            .clickable { viewModel.onEvent(CounterEvent.ClearCounter) }
+                    )
+                }
+            }
+            if (isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.75f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        LoadingIndicator(
+                            modifier = Modifier.size(100.dp),
+                            color = DarkPurple80
+                        )
+
+                        Text(
+                            text = "Loading image... Wait please",
+                            fontSize = 24.sp,
+                            color = Color.LightGray
+                        )
+                    }
+                }
             }
         }
     }
