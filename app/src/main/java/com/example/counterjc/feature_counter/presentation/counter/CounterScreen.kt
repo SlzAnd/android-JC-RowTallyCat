@@ -10,17 +10,22 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LoadingIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -37,16 +42,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.ConstraintSet
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
@@ -58,7 +61,6 @@ import coil.request.ImageRequest
 import coil.size.Size
 import com.example.counterjc.R
 import com.example.counterjc.feature_counter.presentation.counter.components.GoalDialog
-import com.example.counterjc.feature_counter.presentation.util.CustomTopAppBar
 import com.example.counterjc.ui.theme.DarkPurple80
 import com.example.counterjc.ui.theme.achievedGoalColor
 
@@ -81,44 +83,27 @@ fun CounterScreen(
         mutableStateOf(false)
     }
 
-    val constraints = ConstraintSet {
-        val mainBox = createRefFor("main_box")
-        val navigationBar = createRefFor("navigation_bar")
-        val counterText = createRefFor("counter_text")
-
-        constrain(mainBox) {
-            top.linkTo(parent.top)
-            bottom.linkTo(parent.bottom)
-            start.linkTo(parent.start)
-            end.linkTo(parent.end)
-        }
-
-        constrain(navigationBar) {
-            bottom.linkTo(parent.bottom, margin = 20.dp)
-            end.linkTo(parent.end)
-        }
-
-        constrain(counterText) {
-            top.linkTo(parent.top)
-            start.linkTo(parent.start)
-            end.linkTo(parent.end)
-        }
-    }
-
     LifecycleEventEffect(Lifecycle.Event.ON_PAUSE) {
         viewModel.onEvent(CounterEvent.SaveProduct)
     }
 
     Scaffold(
         topBar = {
-            CustomTopAppBar(
-                title = state.name,
-                icon = Icons.AutoMirrored.Filled.ArrowBack,
-                onIconClick = {
-                    viewModel.onEvent(CounterEvent.SaveProduct)
-                    navController.popBackStack()
-                }
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .systemBarsPadding(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = state.name,
+                    style = MaterialTheme.typography.titleLarge,
+                    textAlign = TextAlign.Center,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
         },
         snackbarHost = { SnackbarHost(snackBarHostState) }
     ) { padding ->
@@ -148,147 +133,155 @@ fun CounterScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
+                .clickable {
+                    if (state.counter != state.goal || state.goal <= 0) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            vibrator?.vibrate(
+                                VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE)
+                            )
+                        } else {
+                            vibrator?.vibrate(50)
+                        }
+                        viewModel.onEvent(CounterEvent.Increase)
+                    }
+                    if (
+                        (state.counter == state.goal - 1 && state.goal != 0) ||
+                        (state.counter == state.goal && state.goal != 0)
+                    ) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            vibrator?.vibrate(
+                                VibrationEffect.createWaveform(longArrayOf(0, 200, 100, 200, 100, 200), -1)
+                            )
+                        } else {
+                            vibrator?.vibrate(longArrayOf(0, 200, 100, 200, 100, 200), -1)
+                        }
+                        viewModel.onEvent(CounterEvent.ShowAchievedGoalDialog)
+                    }
+                },
         ) {
-            ConstraintLayout(
-                constraintSet = constraints,
+            SubcomposeAsyncImage(
                 modifier = Modifier
                     .fillMaxSize()
+                    .align(Alignment.Center),
+                alpha = 0.75f,
+                contentScale = ContentScale.Crop,
+                model = ImageRequest.Builder(context)
+                    .data(state.backgroundImage)
+                    .size(Size.ORIGINAL)
+                    .build(),
+                contentDescription = "Background image"
+            ) {
+                val imageState = painter.state
+                if (
+                    imageState is AsyncImagePainter.State.Loading ||
+                    imageState is AsyncImagePainter.State.Error
+                ) {
+                    isLoading = true
+                } else {
+                    isLoading = false
+                    SubcomposeAsyncImageContent()
+                }
+            }
+
+            IconButton(
+                onClick = {
+                    viewModel.onEvent(CounterEvent.SaveProduct)
+                    navController.popBackStack()
+                },
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .systemBarsPadding()
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBackIosNew,
+                    contentDescription = null
+                )
+            }
+
+            Text(
+                text = state.counter.toString(),
+                color = if (state.counter != state.goal || state.goal == 0) {
+                    Color(state.counterColor)
+                } else {
+                    achievedGoalColor
+                },
+                textAlign = TextAlign.Center,
+                fontSize = 130.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(padding),
+            )
+
+
+            Column(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(bottom = 24.dp)
+                    .height(270.dp)
+                    .width(70.dp)
+                    .background(Color.Transparent),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Box(
                     modifier = Modifier
-                        .background(Color.LightGray)
-                        .layoutId("main_box")
-                        .clickable {
-                            if (state.counter != state.goal || state.goal <= 0) {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                    vibrator?.vibrate(
-                                        VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE)
-                                    )
-                                } else {
-                                    vibrator?.vibrate(50)
-                                }
-                                viewModel.onEvent(CounterEvent.Increase)
-                            }
-                            if (
-                                (state.counter == state.goal - 1 && state.goal != 0) ||
-                                (state.counter == state.goal && state.goal != 0)
-                            ) {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                    vibrator?.vibrate(
-                                        VibrationEffect.createWaveform(longArrayOf(0, 200, 100, 200, 100, 200), -1)
-                                    )
-                                } else {
-                                    vibrator?.vibrate(longArrayOf(0, 200, 100, 200, 100, 200), -1)
-                                }
-                                viewModel.onEvent(CounterEvent.ShowAchievedGoalDialog)
-                            }
-                        },
+                        .weight(1f),
+                    contentAlignment = Alignment.Center
                 ) {
-                    SubcomposeAsyncImage(
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_goal),
+                        contentDescription = "Set the goal",
+                        tint = Color(state.iconsColor),
                         modifier = Modifier
-                            .fillMaxSize()
-                            .align(Alignment.Center),
-                        alpha = 0.75f,
-                        contentScale = ContentScale.Crop,
-                        model = ImageRequest.Builder(context)
-                            .data(state.backgroundImage)
-                            .size(Size.ORIGINAL)
-                            .build(),
-                        contentDescription = "Background image"
-                    ) {
-                        val imageState = painter.state
-                        if (
-                            imageState is AsyncImagePainter.State.Loading ||
-                            imageState is AsyncImagePainter.State.Error
-                        ) {
-                            isLoading = true
-                        } else {
-                            isLoading = false
-                            SubcomposeAsyncImageContent()
-                        }
-                    }
-                }
-                Text(
-                    text = state.counter.toString(),
-                    color = if (state.counter != state.goal || state.goal == 0) {
-                        Color(state.counterColor)
-                    } else {
-                        achievedGoalColor
-                    },
-                    textAlign = TextAlign.Center,
-                    fontSize = 130.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .layoutId("counter_text")
-                )
-                Column(
-                    modifier = Modifier
-                        .height(270.dp)
-                        .width(70.dp)
-                        .layoutId("navigation_bar")
-                        .background(Color.Transparent),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .weight(1f),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_goal),
-                            contentDescription = "Set the goal",
-                            tint = Color(state.iconsColor),
+                            .clip(CircleShape)
+                            .size(50.dp)
+                            .clickable { viewModel.onEvent(CounterEvent.ShowSetGoalDialog) }
+                    )
+
+                    if (state.goal > 0) {
+                        Box(
                             modifier = Modifier
+                                .align(Alignment.TopEnd)
+                                .height(24.dp)
                                 .clip(CircleShape)
-                                .size(50.dp)
-                                .clickable { viewModel.onEvent(CounterEvent.ShowSetGoalDialog) }
-                        )
-
-                        if (state.goal > 0) {
-                            Box(
-                                modifier = Modifier
-                                    .align(Alignment.TopEnd)
-                                    .height(24.dp)
-                                    .clip(CircleShape)
-                                    .background(Color.LightGray.copy(alpha = 0.5f)),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    text = "${state.goal}",
-                                    color = Color.Black,
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    modifier = Modifier.padding(horizontal = 4.dp)
-                                )
-                            }
+                                .background(Color.LightGray.copy(alpha = 0.5f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "${state.goal}",
+                                color = Color.Black,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(horizontal = 4.dp)
+                            )
                         }
                     }
-
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_minus),
-                        contentDescription = "Subtract row",
-                        tint = Color(state.iconsColor),
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .weight(1f)
-                            .size(50.dp)
-                            .clickable { viewModel.onEvent(CounterEvent.Decrease) }
-                    )
-
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_rabbit),
-                        contentDescription = "Reset counter",
-                        tint = Color(state.iconsColor),
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .weight(1f)
-                            .size(50.dp)
-                            .clickable { viewModel.onEvent(CounterEvent.ClearCounter) }
-                    )
                 }
+
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_minus),
+                    contentDescription = "Subtract row",
+                    tint = Color(state.iconsColor),
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .weight(1f)
+                        .size(50.dp)
+                        .clickable { viewModel.onEvent(CounterEvent.Decrease) }
+                )
+
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_rabbit),
+                    contentDescription = "Reset counter",
+                    tint = Color(state.iconsColor),
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .weight(1f)
+                        .size(50.dp)
+                        .clickable { viewModel.onEvent(CounterEvent.ClearCounter) }
+                )
             }
+
             if (isLoading) {
                 Box(
                     modifier = Modifier

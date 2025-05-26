@@ -10,6 +10,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -20,6 +21,7 @@ import androidx.compose.ui.text.style.TextOverflow
 fun CustomTopAppBar(
     title: String,
     icon: ImageVector? = null,
+    containerColor: Color = MaterialTheme.colorScheme.background,
     onIconClick: () -> Unit = {}
 ) {
     TopAppBar(
@@ -46,7 +48,7 @@ fun CustomTopAppBar(
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
+            containerColor = containerColor
         )
     )
 }

@@ -3,19 +3,14 @@ package com.example.counterjc.feature_counter.presentation.util
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.AccessTimeFilled
-import androidx.compose.material.icons.filled.Timelapse
 import androidx.compose.material.icons.filled.Title
 import androidx.compose.material.icons.outlined.AccessTime
-import androidx.compose.material.icons.outlined.Timelapse
 import androidx.compose.material.icons.outlined.Title
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ButtonGroupDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
@@ -37,6 +32,7 @@ import com.example.counterjc.feature_counter.domain.util.SortType
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SortRow(
+    modifier: Modifier = Modifier,
     selectedSortType: SortType,
     onChangeSortType: (SortType) -> Unit
 ) {
@@ -50,9 +46,7 @@ fun SortRow(
     var selectedIndex by remember { mutableIntStateOf(selectedSortType.ordinal) }
 
     FlowRow(
-        Modifier
-            .padding(horizontal = 8.dp)
-            .fillMaxWidth(),
+        modifier,
         horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
         verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {

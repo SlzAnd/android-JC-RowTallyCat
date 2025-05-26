@@ -1,6 +1,7 @@
 package com.example.counterjc.feature_counter.presentation.products
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,7 +26,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -76,15 +76,13 @@ fun ProductsScreen(
             modifier = Modifier
                 .fillMaxSize(),
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(12.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+            AnimatedVisibility(
+                visible = state.products.size > 1
             ) {
-
                 SortRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
                     selectedSortType = state.sortType,
                     onChangeSortType = {
                         viewModel.onEvent(ProductEvent.SortProducts(it))
@@ -95,6 +93,7 @@ fun ProductsScreen(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
+                    .padding(top = if (state.products.size > 1) 8.dp else 16.dp)
                     .padding(horizontal = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
