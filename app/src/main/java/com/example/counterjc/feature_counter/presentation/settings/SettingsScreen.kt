@@ -29,6 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.counterjc.BuildConfig
 import com.example.counterjc.R
 import com.example.counterjc.feature_counter.presentation.settings.components.ColorPicker
 import com.example.counterjc.feature_counter.presentation.settings.components.PreviewScreenItem
@@ -205,5 +206,12 @@ fun SettingsScreen(
                 }
             }
         }
+
+//        Text(
+//            text = "v ${BuildConfig.VERSION_NAME}",
+//            style = MaterialTheme.typography.labelSmall,
+//            color = Color.LightGray,
+//            modifier = Modifier.align(Alignment.CenterHorizontally)
+//        )
     }
 }

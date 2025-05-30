@@ -71,6 +71,7 @@ android {
     }
     buildFeatures {
         compose true
+        buildConfig true
     }
     composeOptions {
         kotlinCompilerExtensionVersion '1.5.2'
@@ -138,4 +139,8 @@ dependencies {
 
     // Color picker
     implementation("com.github.skydoves:colorpicker-compose:1.0.4")
+
+    // Google Play Update
+    implementation("com.google.android.play:app-update:2.1.0")
+    implementation("com.google.android.play:app-update-ktx:2.1.0")
 }
