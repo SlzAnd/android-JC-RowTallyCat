@@ -207,11 +207,11 @@ fun SettingsScreen(
             }
         }
 
-//        Text(
-//            text = "v ${BuildConfig.VERSION_NAME}",
-//            style = MaterialTheme.typography.labelSmall,
-//            color = Color.LightGray,
-//            modifier = Modifier.align(Alignment.CenterHorizontally)
-//        )
+        Text(
+            text = "v ${BuildConfig.VERSION_NAME}",
+            style = MaterialTheme.typography.labelSmall,
+            color = Color.LightGray,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
     }
 }
