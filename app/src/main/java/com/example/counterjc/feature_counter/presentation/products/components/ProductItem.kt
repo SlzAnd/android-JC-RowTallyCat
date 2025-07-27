@@ -41,12 +41,11 @@ fun ProductItem(
     Box (
         modifier = modifier
             .fillMaxSize()
-            .clip(RoundedCornerShape(28.dp))
             .background(MaterialTheme.colorScheme.surfaceVariant)
             .padding(horizontal = 8.dp, vertical = 8.dp)
     ) {
         Row(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.Center),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -66,7 +65,7 @@ fun ProductItem(
                 style = MaterialTheme.typography.bodyMedium,
                 maxLines = 2,
                 textAlign = TextAlign.Center,
-                modifier = modifier
+                modifier = Modifier
                     .weight(1f)
             )
 
